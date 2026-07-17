@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elegant Stopwatch</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at top, #1e293b, #0f172a);
+    color: white;
+}
+
+/* MAIN CARD */
+.container {
+    width: 360px;
+    padding: 30px;
+    border-radius: 20px;
+
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    text-align: center;
+}
+
+/* TIME DISPLAY */
+.time {
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    background: linear-gradient(45deg, #00f2fe, #4facfe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* BUTTONS */
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+button {
+    flex: 1;
+    margin: 0 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+    color: white;
+}
+
+.start {
+    background: linear-gradient(45deg, #00c6ff, #0072ff);
+}
+
+.pause {
+    background: linear-gradient(45deg, #f7971e, #ffd200);
+    color: black;
+}
+
+.reset {
+    background: linear-gradient(45deg, #ff416c, #ff4b2b);
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255,255,255,0.2);
+}
+
+/* LAP SECTION */
+.laps {
+    max-height: 150px;
+    overflow-y: auto;
+    text-align: left;
+    margin-top: 10px;
+    padding-right: 5px;
+}
+
+.laps div {
+    padding: 8px;
+    margin: 5px 0;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+/* SCROLL BAR */
+.laps::-webkit-scrollbar {
+    width: 5px;
+}
+
+.laps::-webkit-scrollbar-thumb {
+    background: #4facfe;
+    border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="time" id="display">00:00:00</div>
+
+    <div class="buttons">
+        <button class="start" onclick="startTimer()">Start</button>
+        <button class="pause" onclick="pauseTimer()">Pause</button>
+        <button class="reset" onclick="resetTimer()">Reset</button>
+    </div>
+
+    <button class="pause" onclick="lapTime()" style="width:100%; margin-bottom:10px;">
+        Lap
+    </button>
+
+    <div class="laps" id="laps"></div>
+</div>
+
+<script>
+let seconds = 0;
+let interval = null;
+
+function formatTime() {
+    let hrs = String(Math.floor(seconds / 3600)).padStart(2, '0');
+    let mins = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+    let secs = String(seconds % 60).padStart(2, '0');
+    return `${hrs}:${mins}:${secs}`;
+}
+
+function updateDisplay() {
+    document.getElementById("display").innerText = formatTime();
+}
+
+function startTimer() {
+    if (interval) return; // prevent multiple intervals
+
+    interval = setInterval(() => {
+        seconds++;
+        updateDisplay();
+    }, 1000);
+}
+
+function pauseTimer() {
+    clearInterval(interval);
+    interval = null;
+}
+
+function resetTimer() {
+    clearInterval(interval);
+    interval = null;
+    seconds = 0;
+    updateDisplay();
+    document.getElementById("laps").innerHTML = "";
+}
+
+function lapTime() {
+    if (seconds === 0) return;
+
+    let lap = document.createElement("div");
+    lap.innerText = "Lap - " + formatTime();
+    document.getElementById("laps").appendChild(lap);
+}
+
+updateDisplay();
+</script>
+
+</body>
+</html>
